@@ -1,0 +1,66 @@
+╔═══════════════════════════════════════════════════════════════╗
+║          🚀 MONGODB ATLAS - DÉMARRAGE RAPIDE                 ║
+╚═══════════════════════════════════════════════════════════════╝
+
+📋 ÉTAPES SIMPLES :
+
+1️⃣  CRÉER UN COMPTE (GRATUIT)
+   👉 https://www.mongodb.com/cloud/atlas/register
+   
+2️⃣  CRÉER UN CLUSTER
+   • Choisir "M0 FREE" (512 MB gratuit)
+   • Région : Paris (eu-west-3)
+   • Cliquer "Create Cluster"
+   
+3️⃣  CRÉER UN UTILISATEUR
+   • Username : admin
+   • Password : admin123
+   ⚠️  NOTER LE MOT DE PASSE !
+   
+4️⃣  AUTORISER L'ACCÈS
+   • Network Access > Add IP Address
+   • "Allow Access from Anywhere" (0.0.0.0/0)
+   
+5️⃣  COPIER LA CONNECTION STRING
+   • Database > Connect > Connect your application
+   • Driver : Node.js
+   • COPIER : mongodb+srv://admin:admin123@cluster0.xxxxx.mongodb.net/...
+   
+6️⃣  MODIFIER LE FICHIER .ENV
+   📁 Fichier : backend\.env
+   📝 Ligne 6 :
+   
+   AVANT :
+   MONGO_URI=mongodb+srv://admin:<password>@cluster0.xxxxx.mongodb.net/agent-dashboard?retryWrites=true&w=majority
+   
+   APRÈS (exemple) :
+   MONGO_URI=mongodb+srv://admin:admin123@cluster0.abc123.mongodb.net/agent-dashboard?retryWrites=true&w=majority
+   
+   ⚠️  Remplacez :
+   • <password> par votre VRAI mot de passe
+   • xxxxx par votre VRAI cluster ID
+   
+7️⃣  DÉMARRER LE BACKEND
+   cd backend
+   npm start
+   
+   ✅ Vous devez voir :
+   "Serveur démarré sur le port 5000"
+   "Connecté à MongoDB"
+
+═══════════════════════════════════════════════════════════════
+
+💡 ASTUCE : Lancez le script d'aide automatique !
+   .\setup-atlas.ps1
+
+📖 GUIDE COMPLET : CONFIGURER_ATLAS.md
+
+═══════════════════════════════════════════════════════════════
+
+🎯 EXEMPLE COMPLET DE CONNECTION STRING :
+
+mongodb+srv://admin:admin123@cluster0.abc123.mongodb.net/agent-dashboard?retryWrites=true&w=majority
+              └─────┘ └──────┘         └──────┘
+              username password    cluster ID
+
+═══════════════════════════════════════════════════════════════

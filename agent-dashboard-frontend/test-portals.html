@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Portals - Diagnostic</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .success { color: #22c55e; }
+        .error { color: #ef4444; }
+        .warning { color: #f59e0b; }
+        button {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover { background: #2563eb; }
+        #results { margin-top: 20px; }
+        .result-item {
+            padding: 10px;
+            margin: 5px 0;
+            border-left: 4px solid #3b82f6;
+            background: #f0f9ff;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔍 Diagnostic des Portals React</h1>
+    
+    <div class="test-section">
+        <h2>Tests Automatiques</h2>
+        <button onclick="runAllTests()">▶️ Lancer Tous les Tests</button>
+        <button onclick="clearResults()">🗑️ Effacer</button>
+        <div id="results"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>Tests Manuels</h2>
+        <ol>
+            <li>Ouvrir l'application: <a href="http://localhost:5173" target="_blank">http://localhost:5173</a></li>
+            <li>Ouvrir la console navigateur (F12)</li>
+            <li>Naviguer: Dashboard → Users → Dashboard</li>
+            <li>Ouvrir un dialog, le fermer, rouvrir</li>
+            <li>Recharger la page (F5)</li>
+            <li>Vérifier qu'il n'y a AUCUNE erreur "removeChild"</li>
+        </ol>
+    </div>
+
+    <script>
+        function addResult(message, type = 'info') {
+            const results = document.getElementById('results');
+            const item = document.createElement('div');
+            item.className = 'result-item';
+            item.innerHTML = `<span class="${type}">${type === 'success' ? '✅' : type === 'error' ? '❌' : '⚠️'}</span> ${message}`;
+            results.appendChild(item);
+        }
+
+        function clearResults() {
+            document.getElementById('results').innerHTML = '';
+        }
+
+        async function runAllTests() {
+            clearResults();
+            addResult('Démarrage des tests...', 'info');
+
+            // Test 1: Vérifier que portal-root existe
+            setTimeout(() => {
+                const portalRoot = document.getElementById('portal-root');
+                if (portalRoot) {
+                    addResult('Portal-root trouvé dans le DOM', 'success');
+                } else {
+                    addResult('Portal-root MANQUANT - ERREUR CRITIQUE', 'error');
+                }
+            }, 100);
+
+            // Test 2: Vérifier la connexion à l'API
+            setTimeout(async () => {
+                try {
+                    const response = await fetch('http://localhost:5000/api/users', {
+                        headers: {
+                            'Authorization': 'Bearer ' + (localStorage.getItem('token') || '')
+                        }
+                    });
+                    if (response.ok) {
+                        addResult('Backend accessible (200 OK)', 'success');
+                    } else if (response.status === 401) {
+                        addResult('Backend accessible mais non authentifié', 'warning');
+                    } else {
+                        addResult(`Backend répond avec status ${response.status}`, 'warning');
+                    }
+                } catch (error) {
+                    addResult('Backend NON ACCESSIBLE - Vérifier que le serveur tourne', 'error');
+                }
+            }, 200);
+
+            // Test 3: Vérifier les erreurs console
+            setTimeout(() => {
+                const consoleErrors = [];
+                const originalError = console.error;
+                console.error = (...args) => {
+                    consoleErrors.push(args.join(' '));
+                    originalError.apply(console, args);
+                };
+
+                setTimeout(() => {
+                    console.error = originalError;
+                    if (consoleErrors.length === 0) {
+                        addResult('Aucune erreur console détectée', 'success');
+                    } else {
+                        addResult(`${consoleErrors.length} erreur(s) console détectée(s)`, 'error');
+                        consoleErrors.forEach(err => {
+                            addResult(`  → ${err}`, 'error');
+                        });
+                    }
+                }, 2000);
+            }, 300);
+
+            // Test 4: Vérifier les fichiers critiques
+            setTimeout(async () => {
+                const files = [
+                    '/src/globals.css',
+                    '/src/lib/portal-manager.js',
+                    '/src/hooks/useDialogCleanup.js'
+                ];
+
+                for (const file of files) {
+                    try {
+                        const response = await fetch(file);
+                        if (response.ok) {
+                            addResult(`Fichier ${file} présent`, 'success');
+                        } else {
+                            addResult(`Fichier ${file} MANQUANT`, 'error');
+                        }
+                    } catch (error) {
+                        addResult(`Impossible de vérifier ${file}`, 'warning');
+                    }
+                }
+            }, 400);
+
+            setTimeout(() => {
+                addResult('Tests terminés. Voir résultats ci-dessus.', 'info');
+            }, 3000);
+        }
+
+        // Auto-test au chargement
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                addResult('Page de test chargée. Cliquez sur "Lancer Tous les Tests"', 'info');
+            }, 500);
+        });
+    </script>
+</body>
+</html>

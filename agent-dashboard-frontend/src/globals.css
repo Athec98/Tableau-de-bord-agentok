@@ -1,0 +1,22 @@
+/* Désactiver les animations Radix pour éviter les erreurs de portal */
+[data-state="open"],
+[data-state="closed"] {
+  animation: none !important;
+  transition: none !important;
+}
+
+/* S'assurer que les portals ne causent pas de problèmes */
+#portal-root {
+  position: fixed;
+  z-index: 9999;
+  pointer-events: none;
+}
+
+#portal-root > * {
+  pointer-events: auto;
+}
+
+/* Forcer le nettoyage des transformations qui peuvent causer des problèmes */
+[data-radix-portal] {
+  transform: none !important;
+}
