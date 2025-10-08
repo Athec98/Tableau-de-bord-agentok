@@ -23,23 +23,32 @@ class PortalManager {
   }
 
   cleanup() {
-    const portalRoot = document.getElementById('portal-root');
-    if (portalRoot) {
-      // Vider complètement le conteneur portal
-      portalRoot.innerHTML = '';
-    }
-    this.portals.clear();
+    requestAnimationFrame(() => {
+      const portalRoot = document.getElementById('portal-root');
+      if (portalRoot) {
+        // Nettoyer les enfants un par un de manière sûre
+        while (portalRoot.firstChild) {
+          try {
+            portalRoot.removeChild(portalRoot.firstChild);
+          } catch (e) {
+            // Silently ignore removeChild errors
+            break;
+          }
+        }
+      }
+      this.portals.clear();
+    });
   }
 
   safeCleanup(callback) {
-    // Exécuter le callback après un délai pour éviter les erreurs de timing
-    setTimeout(() => {
+    // Utiliser requestAnimationFrame pour éviter les erreurs de timing
+    requestAnimationFrame(() => {
       try {
         callback();
       } catch (error) {
-        console.warn('Portal cleanup warning:', error);
+        // Silently ignore cleanup errors
       }
-    }, 0);
+    });
   }
 }
 
@@ -55,7 +64,14 @@ if (typeof window !== 'undefined') {
       portalManager.safeCleanup(() => {
         const portalRoot = document.getElementById('portal-root');
         if (portalRoot && portalRoot.children.length > 0) {
-          portalRoot.innerHTML = '';
+          // Nettoyage sécurisé
+          while (portalRoot.firstChild) {
+            try {
+              portalRoot.removeChild(portalRoot.firstChild);
+            } catch (e) {
+              break;
+            }
+          }
         }
       });
     }
