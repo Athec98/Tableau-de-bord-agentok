@@ -211,21 +211,22 @@ const Users = () => {
   return (
     <div className="space-y-6">
       {/* En-tête */}
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Utilisateurs</h1>
-          <p className="text-muted-foreground">
+          <h1 className="text-2xl md:text-3xl font-bold tracking-tight">Utilisateurs</h1>
+          <p className="text-sm md:text-base text-muted-foreground">
             Gérez les clients, agents et distributeurs
           </p>
         </div>
         <div className="flex gap-2">
           <Button variant="outline" size="sm" onClick={loadUsers} disabled={loading}>
-            <RefreshCw className={`mr-2 h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
-            Rafraîchir
+            <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''} md:mr-2`} />
+            <span className="hidden md:inline">Rafraîchir</span>
           </Button>
-          <Button onClick={() => setShowAddDialog(true)}>
-            <Plus className="mr-2 h-4 w-4" />
-            Ajouter un utilisateur
+          <Button onClick={() => setShowAddDialog(true)} size="sm" className="md:size-default">
+            <Plus className="h-4 w-4 md:mr-2" />
+            <span className="hidden sm:inline">Ajouter</span>
+            <span className="hidden md:inline ml-1">un utilisateur</span>
           </Button>
         </div>
       </div>
@@ -293,8 +294,8 @@ const Users = () => {
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            {/* En-tête du tableau */}
-            <div className="flex items-center space-x-4 pb-2 border-b">
+            {/* En-tête du tableau - Desktop uniquement */}
+            <div className="hidden md:flex items-center space-x-4 pb-2 border-b">
               <Checkbox
                 checked={getCurrentPageUsers().length > 0 && getCurrentPageUsers().every(user => selectedUsers.includes(user._id))}
                 onCheckedChange={handleSelectAll}
@@ -311,42 +312,44 @@ const Users = () => {
 
             {/* Lignes des utilisateurs */}
             {getCurrentPageUsers().map((user) => (
-              <div key={user._id} className="flex items-center space-x-4 py-2">
-                <Checkbox
-                  checked={selectedUsers.includes(user._id)}
-                  onCheckedChange={() => handleSelectUser(user._id)}
-                />
-                <div className="flex-1 grid grid-cols-6 gap-4 items-center">
-                  <div className="flex items-center space-x-3">
-                    <Avatar className="h-8 w-8">
-                      <AvatarImage src={user.photo} alt={`${user.prenom} ${user.nom}`} />
-                      <AvatarFallback className="text-xs">
-                        {getInitials(user.nom, user.prenom)}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div>
-                      <div className="font-medium">{user.prenom} {user.nom}</div>
-                      <div className="flex items-center space-x-1">
-                        {user.isActive ? (
-                          <CheckCircle className="h-3 w-3 text-green-500" />
-                        ) : (
-                          <Ban className="h-3 w-3 text-red-500" />
-                        )}
-                        <span className="text-xs text-muted-foreground">
-                          {user.isActive ? 'Actif' : 'Bloqué'}
-                        </span>
+              <div key={user._id}>
+                {/* Vue Desktop */}
+                <div className="hidden md:flex items-center space-x-4 py-2">
+                  <Checkbox
+                    checked={selectedUsers.includes(user._id)}
+                    onCheckedChange={() => handleSelectUser(user._id)}
+                  />
+                  <div className="flex-1 grid grid-cols-6 gap-4 items-center">
+                    <div className="flex items-center space-x-3">
+                      <Avatar className="h-8 w-8">
+                        <AvatarImage src={user.photo} alt={`${user.prenom} ${user.nom}`} />
+                        <AvatarFallback className="text-xs">
+                          {getInitials(user.nom, user.prenom)}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div>
+                        <div className="font-medium">{user.prenom} {user.nom}</div>
+                        <div className="flex items-center space-x-1">
+                          {user.isActive ? (
+                            <CheckCircle className="h-3 w-3 text-green-500" />
+                          ) : (
+                            <Ban className="h-3 w-3 text-red-500" />
+                          )}
+                          <span className="text-xs text-muted-foreground">
+                            {user.isActive ? 'Actif' : 'Bloqué'}
+                          </span>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  <span className="text-sm">{user.email}</span>
-                  <span className="text-sm font-mono">{user.numeroCompte}</span>
-                  <span className="text-sm">{user.telephone}</span>
-                  <Badge className={getRoleColor(user.role)}>
-                    {user.role}
-                  </Badge>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" size="sm">
+                    <span className="text-sm">{user.email}</span>
+                    <span className="text-sm font-mono">{user.numeroCompte}</span>
+                    <span className="text-sm">{user.telephone}</span>
+                    <Badge className={getRoleColor(user.role)}>
+                      {user.role}
+                    </Badge>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" size="sm">
                         <MoreHorizontal className="h-4 w-4" />
                       </Button>
                     </DropdownMenuTrigger>
@@ -385,6 +388,100 @@ const Users = () => {
                   </DropdownMenu>
                 </div>
               </div>
+              
+              {/* Vue Mobile */}
+              <div className="md:hidden border rounded-lg p-4 space-y-3">
+                <div className="flex items-start justify-between">
+                  <div className="flex items-center space-x-3 flex-1">
+                    <Checkbox
+                      checked={selectedUsers.includes(user._id)}
+                      onCheckedChange={() => handleSelectUser(user._id)}
+                    />
+                    <Avatar className="h-10 w-10">
+                      <AvatarImage src={user.photo} alt={`${user.prenom} ${user.nom}`} />
+                      <AvatarFallback className="text-sm">
+                        {getInitials(user.nom, user.prenom)}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="flex-1 min-w-0">
+                      <div className="font-medium truncate">{user.prenom} {user.nom}</div>
+                      <Badge className={`${getRoleColor(user.role)} text-xs mt-1`}>
+                        {user.role}
+                      </Badge>
+                    </div>
+                  </div>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" size="sm">
+                        <MoreHorizontal className="h-4 w-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuItem
+                        onClick={() => {
+                          setUserToEdit(user);
+                          setShowEditDialog(true);
+                        }}
+                      >
+                        <Edit className="mr-2 h-4 w-4" />
+                        Modifier
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => setConfirmBlock({ open: true, user })}>
+                        {user.isActive ? (
+                          <>
+                            <Ban className="mr-2 h-4 w-4" />
+                            Bloquer
+                          </>
+                        ) : (
+                          <>
+                            <CheckCircle className="mr-2 h-4 w-4" />
+                            Débloquer
+                          </>
+                        )}
+                      </DropdownMenuItem>
+                      <DropdownMenuItem 
+                        className="text-destructive"
+                        onClick={() => setConfirmDelete({ open: true, user })}
+                      >
+                        <Trash2 className="mr-2 h-4 w-4" />
+                        Supprimer
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
+                
+                <div className="grid grid-cols-2 gap-2 text-sm">
+                  <div>
+                    <div className="text-muted-foreground text-xs">Email</div>
+                    <div className="truncate">{user.email}</div>
+                  </div>
+                  <div>
+                    <div className="text-muted-foreground text-xs">Téléphone</div>
+                    <div className="truncate">{user.telephone}</div>
+                  </div>
+                  <div>
+                    <div className="text-muted-foreground text-xs">Compte</div>
+                    <div className="font-mono text-xs">{user.numeroCompte}</div>
+                  </div>
+                  <div>
+                    <div className="text-muted-foreground text-xs">Statut</div>
+                    <div className="flex items-center space-x-1">
+                      {user.isActive ? (
+                        <>
+                          <CheckCircle className="h-3 w-3 text-green-500" />
+                          <span className="text-xs">Actif</span>
+                        </>
+                      ) : (
+                        <>
+                          <Ban className="h-3 w-3 text-red-500" />
+                          <span className="text-xs">Bloqué</span>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
             ))}
           </div>
 
