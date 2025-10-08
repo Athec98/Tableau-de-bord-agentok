@@ -236,8 +236,8 @@ const Profile = () => {
           <ArrowLeft className="h-5 w-5" />
         </Button>
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Mon Profil</h1>
-          <p className="text-muted-foreground">
+          <h1 className="text-2xl md:text-3xl font-bold tracking-tight">Mon Profil</h1>
+          <p className="text-sm md:text-base text-muted-foreground">
             Gérer vos informations personnelles
           </p>
         </div>

@@ -123,10 +123,10 @@ const Dashboard = () => {
   return (
     <div className="space-y-6">
       {/* En-tête */}
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
-          <p className="text-muted-foreground">
+          <h1 className="text-2xl md:text-3xl font-bold tracking-tight">Dashboard</h1>
+          <p className="text-sm md:text-base text-muted-foreground">
             Vue d'ensemble de votre tableau de bord agent
           </p>
         </div>
@@ -136,8 +136,8 @@ const Dashboard = () => {
           onClick={loadStats}
           disabled={loadingStats}
         >
-          <RefreshCw className={`mr-2 h-4 w-4 ${loadingStats ? 'animate-spin' : ''}`} />
-          Rafraîchir
+          <RefreshCw className={`h-4 w-4 ${loadingStats ? 'animate-spin' : ''} md:mr-2`} />
+          <span className="hidden md:inline">Rafraîchir</span>
         </Button>
       </div>
 
@@ -198,19 +198,24 @@ const Dashboard = () => {
                   {searchResults.map((user) => (
                     <div
                       key={user._id || user.id}
-                      className="flex items-center justify-between p-3 border rounded-lg hover:bg-accent transition-colors"
+                      className="flex flex-col md:flex-row md:items-center md:justify-between p-3 border rounded-lg hover:bg-accent transition-colors gap-3"
                     >
-                      <div className="flex-1">
-                        <div className="flex items-center space-x-2">
-                          <span className="font-medium">
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center flex-wrap gap-2">
+                          <span className="font-medium truncate">
                             {user.prenom} {user.nom}
                           </span>
                           <Badge className={getRoleColor(user.role)}>
                             {user.role}
                           </Badge>
                         </div>
-                        <div className="text-sm text-muted-foreground">
-                          {user.email} • {user.numeroCompte} • {user.telephone}
+                        <div className="text-sm text-muted-foreground mt-1">
+                          <div className="truncate">{user.email}</div>
+                          <div className="flex flex-wrap gap-1 text-xs mt-1">
+                            <span className="font-mono">{user.numeroCompte}</span>
+                            <span>•</span>
+                            <span>{user.telephone}</span>
+                          </div>
                         </div>
                       </div>
                       <Button 
@@ -220,6 +225,7 @@ const Dashboard = () => {
                           setSelectedUser(user);
                           setIsDetailsOpen(true);
                         }}
+                        className="w-full md:w-auto"
                       >
                         Voir détails
                       </Button>
@@ -264,7 +270,7 @@ const Dashboard = () => {
               </div>
 
               {/* Informations détaillées */}
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label className="text-sm font-medium text-muted-foreground">Email</Label>
                   <p className="text-sm">{selectedUser.email}</p>

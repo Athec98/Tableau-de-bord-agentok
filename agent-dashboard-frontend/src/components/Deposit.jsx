@@ -183,8 +183,8 @@ const Deposit = () => {
     <div className="space-y-6">
       {/* En-tête */}
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">Dépôt</h1>
-        <p className="text-muted-foreground">
+        <h1 className="text-2xl md:text-3xl font-bold tracking-tight">Dépôt</h1>
+        <p className="text-sm md:text-base text-muted-foreground">
           Effectuer un dépôt vers un distributeur
         </p>
       </div>
