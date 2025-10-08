@@ -189,6 +189,21 @@ const Users = () => {
     }
   };
 
+  const blockSelectedUsers = async () => {
+    try {
+      // Bloquer chaque utilisateur sélectionné
+      await Promise.all(selectedUsers.map(id => usersAPI.toggleStatus(id)));
+      toast.success(`✅ ${selectedUsers.length} utilisateur(s) bloqué(s)/débloqué(s)`);
+      console.log('🔄 Rechargement après blocage/déblocage multiple');
+      setSelectedUsers([]);
+      // Recharger les utilisateurs
+      await loadUsers();
+    } catch (error) {
+      console.error('Erreur lors du blocage/déblocage multiple:', error);
+      toast.error('❌ Impossible de bloquer/débloquer les utilisateurs');
+    }
+  };
+
   const getCurrentPageUsers = () => {
     const startIndex = (currentPage - 1) * usersPerPage;
     const endIndex = startIndex + usersPerPage;
@@ -268,18 +283,30 @@ const Users = () => {
       {selectedUsers.length > 0 && (
         <Card>
           <CardContent className="pt-6">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-3">
               <span className="text-sm text-muted-foreground">
                 {selectedUsers.length} utilisateur(s) sélectionné(s)
               </span>
-              <Button
-                variant="destructive"
-                size="sm"
-                onClick={() => setConfirmDeleteMultiple(true)}
-              >
-                <Trash2 className="mr-2 h-4 w-4" />
-                Supprimer la sélection
-              </Button>
+              <div className="flex gap-2 w-full md:w-auto">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={blockSelectedUsers}
+                  className="flex-1 md:flex-initial"
+                >
+                  <Ban className="mr-2 h-4 w-4" />
+                  Bloquer/Débloquer
+                </Button>
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  onClick={() => setConfirmDeleteMultiple(true)}
+                  className="flex-1 md:flex-initial"
+                >
+                  <Trash2 className="mr-2 h-4 w-4" />
+                  Supprimer
+                </Button>
+              </div>
             </div>
           </CardContent>
         </Card>
