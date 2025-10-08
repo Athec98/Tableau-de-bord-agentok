@@ -12,7 +12,19 @@ const PORT = process.env.PORT || 5000;
 
 // Middleware
 app.use(express.json());
-app.use(cors()); // Activer CORS pour toutes les requêtes
+
+// Configuration CORS pour autoriser Vercel
+const corsOptions = {
+  origin: [
+    'https://tableau-de-bord-agentok.vercel.app',
+    'http://localhost:5173',
+    'http://localhost:3000'
+  ],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'x-auth-token']
+};
+app.use(cors(corsOptions));
 // Connexion à MongoDB
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log("Connecté à MongoDB"))
