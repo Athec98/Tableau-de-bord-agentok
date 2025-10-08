@@ -58,6 +58,7 @@ const Users = () => {
   const [confirmDelete, setConfirmDelete] = useState({ open: false, user: null });
   const [confirmBlock, setConfirmBlock] = useState({ open: false, user: null });
   const [confirmDeleteMultiple, setConfirmDeleteMultiple] = useState(false);
+  const [confirmBlockMultiple, setConfirmBlockMultiple] = useState(false);
   const usersPerPage = 10;
 
   // Fonction pour charger les utilisateurs
@@ -291,7 +292,7 @@ const Users = () => {
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={blockSelectedUsers}
+                  onClick={() => setConfirmBlockMultiple(true)}
                   className="flex-1 md:flex-initial"
                 >
                   <Ban className="mr-2 h-4 w-4" />
@@ -644,6 +645,31 @@ const Users = () => {
               }}
             >
               Supprimer tout
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Confirmation de blocage/déblocage multiple */}
+      <AlertDialog open={confirmBlockMultiple} onOpenChange={setConfirmBlockMultiple}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Confirmer le changement de statut</AlertDialogTitle>
+            <AlertDialogDescription>
+              Êtes-vous sûr de vouloir modifier le statut de <strong>{selectedUsers.length} utilisateur(s)</strong> ?
+              <br />
+              Les utilisateurs actifs seront bloqués et les utilisateurs bloqués seront débloqués.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Annuler</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => {
+                blockSelectedUsers();
+                setConfirmBlockMultiple(false);
+              }}
+            >
+              Confirmer
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
